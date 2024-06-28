@@ -1,0 +1,124 @@
+/* General styles for the main page */
+.main {
+  background-color: #1a202c;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Heading style */
+.heading {
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  margin: 20px 0;
+  text-shadow: 2px 2px #000;
+}
+
+/* Character list container */
+.characterList {
+  display: grid;
+  grid-template-columns: repeat(5, 240px);
+  gap: 20px;
+  max-width: 1200px;
+  padding: 20px;
+  justify-content: center;
+}
+
+/* Show Details button styling */
+.showDetails {
+  background-color: #0d6efd;
+  border-radius: 5px;
+  margin: 10px auto;
+  font-weight: 700;
+  padding: 10px 20px;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-out;
+
+  &:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-3px);
+  }
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.pagination .page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-out, box-shadow 0.3s ease-out;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+
+  &.active {
+    background-color: #0116b0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover {
+    background-color: #0116b0;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Card styling */
+.card {
+  height: 17rem;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-out;
+  background-color: #2d3748;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Card header styling */
+.card .cardHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #2d3748;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #dee2e6;
+  color: #ffcc00;
+}
+
+.card .cardBody {
+  padding: 10px;
+}
+
+.card .cardFooter {
+  padding: 10px;
+  border-top: 1px solid #dee2e6;
+  background-color: #2d3748;
+}
