@@ -5,8 +5,8 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 /* Heading style */
@@ -22,7 +22,7 @@
 /* Character list container */
 .characterList {
   display: grid;
-  grid-template-columns: repeat(5, 240px);
+  grid-template-columns: repeat(5, 300px);
   gap: 20px;
   max-width: 1200px;
   padding: 20px;
@@ -82,8 +82,8 @@
 
 /* Card styling */
 .card {
-  height: 17rem;
-  width: 240px;
+  height: 33rem;
+  width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -114,7 +114,7 @@
 }
 
 .card .cardBody {
-  padding: 10px;
+  background-color: #d7daf5;
 }
 
 .card .cardFooter {

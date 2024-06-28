@@ -2,12 +2,12 @@
 import { Suspense, useState } from "react";
 import styles from "@/app/page.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { getPaginatedCharacters } from "@/app/api/swapi";
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
-import Link from "next/link";
+import { getImageById, getPaginatedCharacters } from "@/app/api/swapi";
 import AddToFavorite from "@/components/AddToFavorite";
-import Loader from "@/components/Loader";
 import Pagination from "@/components/Pagination";
+import Loader from "@/components/Loader";
+import Link from "next/link";
 
 export default function Home() {
   const [page, setPage] = useState(1);
@@ -48,10 +48,7 @@ export default function Home() {
                       </div>
                     </CardHeader>
                     <CardBody className={styles.cardBody}>
-                      <p>Height: {character.height}</p>
-                      <p>Mass: {character.mass}</p>
-                      <p>Birth Year: {character.birth_year}</p>
-                      <p>Gender: {character.gender}</p>
+                      <img src={getImageById(getIdOfCharacter(character.url), 'characters')} alt='characters' />
                     </CardBody>
                     <CardFooter className={styles.cardFooter}>
                       <Link className={styles.showDetails} href={`/${getIdOfCharacter(character.url)}`}>Show more details</Link>

@@ -1,11 +1,11 @@
 "use client";
 
 export async function getPaginatedCharacters(page = 1) {
-  const response = await fetch(`https://swapi.dev/api/people/?page=${page}`);
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
-  return response.json();
+    const response = await fetch(`https://swapi.dev/api/people/?page=${page}`);
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+    return response.json();
 }
 
 export async function getCharacter(id) {
@@ -54,4 +54,8 @@ export async function getVehicle(id) {
         throw new Error(response.statusText);
     }
     return response.json();
+}
+
+export function getImageById(id, type) {
+    return `https://starwars-visualguide.com/assets/img/${type}/${id}.jpg`;
 }

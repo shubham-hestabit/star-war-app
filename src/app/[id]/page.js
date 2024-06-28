@@ -1,7 +1,7 @@
 'use client';
 import { useParams } from "next/navigation";
 import { useQuery, useQueries } from "@tanstack/react-query";
-import { getCharacter, getFilm, getPlanet, getSpecies, getStarship, getVehicle } from "@/app/api/swapi";
+import { getCharacter, getFilm, getImageById, getPlanet, getSpecies, getStarship, getVehicle } from "@/app/api/swapi";
 import {
   Box,
   Text,
@@ -10,14 +10,10 @@ import {
   HStack,
   List,
   ListItem,
-  ListIcon,
   Flex,
-  Tooltip,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import styles from "@/app/page.module.css";
 import { Suspense } from "react";
-import { CheckCircleIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import AddToFavorite from "@/components/AddToFavorite";
 import Loader from "@/components/Loader";
 
@@ -36,7 +32,9 @@ export default function Page() {
   });
 
   function getIdFromUrl(url) {
-    return url.match(/(\d+)/)[0];
+    if (url) {
+      return url.match(/(\d+)/)[0];
+    }
   }
 
   const homeworld = useQueries({
@@ -85,98 +83,143 @@ export default function Page() {
   });
 
   return (
-    <div className={styles.main}>
-      <Suspense fallback={<Loader />}>
-        {isLoading && <Loader />}
-        {error && <p>Error: {error.message}</p>}
-        {data && (
-          <MotionBox p={5} shadow="lg" borderWidth="1px" borderRadius="lg" bg="gray.700" color="white" whileHover={{ scale: 1.05 }}>
-            <VStack spacing={4}>
-              <div style={{ display: 'flex' }}>
-                <Heading as="h1" size="2xl" color="yellow.300" _hover={{ color: 'orange' }}>
-                  {data.name}
-                </Heading>
-                <div title="Add to Favorite" style={{ marginLeft: "50px" }}>
-                  <AddToFavorite id={id} iconSize={45} />
+    <Suspense fallback={<Loader />}>
+      {isLoading && <Loader />}
+      {error && <p>Error: {error.message}</p>}
+      {data && (
+        <MotionBox p={5} bg="gray.700" color="white">
+          <VStack spacing={4}>
+            <HStack spacing={10} style={{ fontWeight: "bold", marginTop: "15px" }}>
+              <VStack align="start">
+                <img src={getImageById(id, 'characters')} alt='characters' width={250} style={{ borderRadius: "20px" }} />
+              </VStack>
+              <VStack align="start">
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Heading as="h1" size="xl" color="yellow.300" _hover={{ color: 'orange' }}>
+                    {data.name}
+                  </Heading>
+                  <div style={{ marginLeft: '20px' }}>
+                    <AddToFavorite id={id} iconSize={42} />
+                  </div>
                 </div>
-              </div>
-              <HStack spacing={10} style={{ fontWeight: "bold", marginTop: "15px" }}>
-                <VStack align="start">
-                  <Text>Height: {data.height} cm</Text>
-                  <Text>Mass: {data.mass} kg</Text>
-                </VStack>
-                <VStack align="start">
-                  <Text>Hair Color: {data.hair_color}</Text>
-                  <Text>Skin Color: {data.skin_color}</Text>
-                </VStack>
-                <VStack align="start">
-                  <Text>Eye Color: {data.eye_color}</Text>
-                  <Text>Birth Year: {data.birth_year}</Text>
-                </VStack>
-                <VStack align="start">
-                  <Text>Gender: {data.gender}</Text>
-                  <Text>Homeworld: {homeworld[0]?.data?.name}</Text>
-                </VStack>
-              </HStack>
+                <Text>Height: {data.height} cm</Text>
+                <Text>Mass: {data.mass} kg</Text>
+                <Text>Hair Color: {data.hair_color}</Text>
+                <Text>Skin Color: {data.skin_color}</Text>
+                <Text>Eye Color: {data.eye_color}</Text>
+                <Text>Birth Year: {data.birth_year}</Text>
+                <Text>Gender: {data.gender}</Text>
+                <Text>Homeworld: {homeworld[0]?.data?.name}</Text>
+              </VStack>
+            </HStack>
+          </VStack>
+          <div style={{ margin: "auto", width: '50%' }}>
+            {data.films.length > 0 && (
+              <VStack align="start" spacing={5} p={5} bg="gray.800" borderRadius="md" m={2} shadow="md">
+                <Heading as="h3" size="lg" color="yellow.300" m={'auto'}>Films</Heading>
+                <List spacing={2}>
+                  <Flex wrap="wrap" justify="center" gap={5}>
+                    {films.map((film, index) => (
+                      <MotionListItem
+                        key={index}
+                        whileHover={{ scale: 1.1 }}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          margin: '10px',
+                          flex: '0 0 calc(20% - 50px)'
+                        }}
+                      >
+                        <img src={getImageById(getIdFromUrl(film?.data?.url), 'films')} alt='films' width={100} style={{ borderRadius: "20px" }} />
+                        <span style={{ width: '100px', textAlign: 'center', marginTop: '5px' }}>{film?.data?.title}</span>
+                      </MotionListItem>
+                    ))}
+                  </Flex>
+                </List>
+              </VStack>
+            )}
 
-              <Flex marginTop={8} wrap="wrap" justify="center">
-                {data.films.length > 0 && (
-                  <VStack align="start" spacing={4} p={4} bg="gray.800" borderRadius="md" m={2} shadow="md">
-                    <Heading as="h3" size="lg" color="yellow.300">Films</Heading>
-                    <List spacing={2}>
-                      {films.map((film, index) => (
-                        <MotionListItem key={index} whileHover={{ scale: 1.1 }}>
-                          <ListIcon as={CheckCircleIcon} color="green.500" />
-                          {film?.data?.title}
-                        </MotionListItem>
-                      ))}
-                    </List>
-                  </VStack>
-                )}
-                {data.species.length > 0 && (
-                  <VStack align="start" spacing={4} p={4} bg="gray.800" borderRadius="md" m={2} shadow="md">
-                    <Heading as="h3" size="lg" color="yellow.300">Species</Heading>
-                    <List spacing={2}>
-                      {species.map((specie, index) => (
-                        <MotionListItem key={index} whileHover={{ scale: 1.1 }}>
-                          <ListIcon as={CheckCircleIcon} color="green.500" />
-                          {specie?.data?.name}
-                        </MotionListItem>
-                      ))}
-                    </List>
-                  </VStack>
-                )}
-                {data.vehicles.length > 0 && (
-                  <VStack align="start" spacing={4} p={4} bg="gray.800" borderRadius="md" m={2} shadow="md">
-                    <Heading as="h3" size="lg" color="yellow.300">Vehicles</Heading>
-                    <List spacing={2}>
-                      {vehicles.map((vehicle, index) => (
-                        <MotionListItem key={index} whileHover={{ scale: 1.1 }}>
-                          <ListIcon as={CheckCircleIcon} color="green.500" />
-                          {vehicle?.data?.name}
-                        </MotionListItem>
-                      ))}
-                    </List>
-                  </VStack>
-                )}
-                {data.starships.length > 0 && (
-                  <VStack align="start" spacing={4} p={4} bg="gray.800" borderRadius="md" m={2} shadow="md">
-                    <Heading as="h3" size="lg" color="yellow.300">Starships</Heading>
-                    <List spacing={2}>
-                      {starships.map((starship, index) => (
-                        <MotionListItem key={index} whileHover={{ scale: 1.1 }}>
-                          <ListIcon as={CheckCircleIcon} color="green.500" />
-                          {starship?.data?.name}
-                        </MotionListItem>
-                      ))}
-                    </List>
-                  </VStack>
-                )}
-              </Flex>
-            </VStack>
-          </MotionBox>
-        )}
-      </Suspense>
-    </div>
+            {data.species.length > 0 && (
+              <VStack align="start" spacing={5} p={5} bg="gray.800" borderRadius="md" m={2} shadow="md">
+                <Heading as="h3" size="lg" color="yellow.300" m={'auto'}>Species</Heading>
+                <List spacing={2}>
+                  <Flex wrap="wrap" justify="center" gap={5}>
+                    {species.map((specie, index) => (
+                      <MotionListItem
+                        key={index}
+                        whileHover={{ scale: 1.1 }}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          margin: '10px',
+                          flex: '0 0 calc(20% - 50px)'
+                        }}
+                      >
+                        <img src={getImageById(getIdFromUrl(specie?.data?.url), 'species')} alt='species' width={100} style={{ borderRadius: "20px" }} />
+                        <span style={{ width: '100px', textAlign: 'center', marginTop: '5px' }}>{specie?.data?.name}</span>
+                      </MotionListItem>
+                    ))}
+                  </Flex>
+                </List>
+              </VStack>
+            )}
+
+            {data.vehicles.length > 0 && (
+              <VStack align="start" spacing={5} p={5} bg="gray.800" borderRadius="md" m={2} shadow="md">
+                <Heading as="h3" size="lg" color="yellow.300" m={'auto'}>Vehicles</Heading>
+                <List spacing={2}>
+                  <Flex wrap="wrap" justify="center" gap={5}>
+                    {vehicles.map((vehicle, index) => (
+                      <MotionListItem
+                        key={index}
+                        whileHover={{ scale: 1.1 }}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          margin: '10px',
+                          flex: '0 0 calc(20% - 50px)'
+                        }}
+                      >
+                        <img src={getImageById(getIdFromUrl(vehicle?.data?.url), 'vehicles')} alt='vehicles' width={100} style={{ borderRadius: "20px" }} />
+                        <span style={{ width: '110px', textAlign: 'center', marginTop: '5px' }}>{vehicle?.data?.name}</span>
+                      </MotionListItem>
+                    ))}
+                  </Flex>
+                </List>
+              </VStack>
+            )}
+
+            {data.starships.length > 0 && (
+              <VStack align="start" spacing={5} p={5} bg="gray.800" borderRadius="md" m={2} shadow="md">
+                <Heading as="h3" size="lg" color="yellow.300" m={'auto'}>Starships</Heading>
+                <List spacing={2}>
+                  <Flex wrap="wrap" justify="center" gap={5}>
+                    {starships.map((starship, index) => (
+                      <MotionListItem
+                        key={index}
+                        whileHover={{ scale: 1.1 }}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          margin: '10px',
+                          flex: '0 0 calc(20% - 50px)'
+                        }}
+                      >
+                        <img src={getImageById(getIdFromUrl(starship?.data?.url), 'starships')} alt='starships' width={100} style={{ borderRadius: "20px" }} />
+                        <span style={{ width: '100px', textAlign: 'center', marginTop: '5px' }}>{starship?.data?.name}</span>
+                      </MotionListItem>
+                    ))}
+                  </Flex>
+                </List>
+              </VStack>
+            )}
+          </div>
+        </MotionBox>
+      )}
+    </Suspense>
   );
 }
