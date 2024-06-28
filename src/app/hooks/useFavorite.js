@@ -12,26 +12,25 @@ export default function useFavourite() {
         }
     }, []);
 
-    useEffect(() => {
-        if (favorites.length !== 0) {
-            localStorage.setItem("favorites", JSON.stringify(favorites));
-        }
-    }, [favorites]);
-
     function isFavorite(id) {
         return favorites.includes(id);
     }
 
     function toggleFavorite(id) {
         if (isFavorite(id)) {
-            setFavorites(favorites.filter((favorite) => favorite !== id));
+            setFavorites((prev) => {
+                const fav = prev.filter((favorite) => favorite !== id);
+                localStorage.setItem("favorites", JSON.stringify(fav));
+                return fav;
+            });
         } else {
-            setFavorites([...favorites, id]);
+            setFavorites(prev => {
+                const fav = [...prev, id];
+                localStorage.setItem("favorites", JSON.stringify(fav));
+                return fav;
+            });
         }
     }
 
-    return {
-        toggleFavorite,
-        isFavorite,
-    };
+    return { toggleFavorite, isFavorite };
 }
