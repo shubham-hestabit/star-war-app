@@ -1,27 +1,33 @@
-import { useState } from 'react';
+"use client";
+import { useEffect, useContext } from 'react';
+import { FavoriteContext } from '@/app/context/favoriteContext';
 
-export default function useFavorite() {
-    const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') ?? '[]'));
+export default function useFavourite() {
+    const { favorites, setFavorites } = useContext(FavoriteContext);
 
-    function toggleFavorite(id) {
-        setFavorites(prevFavorites => {
-            const isCurrentlyFavorite = prevFavorites.includes(id);
-            let newFavorites;
+    useEffect(() => {
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites"));
+        if (storedFavorites) {
+            setFavorites(storedFavorites);
+        }
+    }, []);
 
-            if (isCurrentlyFavorite) {
-                newFavorites = prevFavorites.filter(favourite => favourite !== id);
-                
-            } else {
-                newFavorites = [...prevFavorites, id];
-            }
-
-            localStorage.setItem('favorites', JSON.stringify(newFavorites));
-            return newFavorites;
-        });
-    }
+    useEffect(() => {
+        if (favorites.length !== 0) {
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+        }
+    }, [favorites]);
 
     function isFavorite(id) {
         return favorites.includes(id);
+    }
+
+    function toggleFavorite(id) {
+        if (isFavorite(id)) {
+            setFavorites(favorites.filter((favorite) => favorite !== id));
+        } else {
+            setFavorites([...favorites, id]);
+        }
     }
 
     return {
