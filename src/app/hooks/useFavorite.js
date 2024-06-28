@@ -10,6 +10,7 @@ export default function useFavorite() {
 
             if (isCurrentlyFavorite) {
                 newFavorites = prevFavorites.filter(favourite => favourite !== id);
+                
             } else {
                 newFavorites = [...prevFavorites, id];
             }
